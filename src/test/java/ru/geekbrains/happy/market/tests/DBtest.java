@@ -1,26 +1,20 @@
 package ru.geekbrains.happy.market.tests;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
 import ru.geekbrains.happy.market.model.Product;
 import ru.geekbrains.happy.market.repositories.ProductRepository;
 import ru.geekbrains.happy.market.services.ProductService;
 
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = ProductService.class)
+@SpringBootTest(classes = {ProductRepository.class, ProductService.class})
 @AutoConfigureMockMvc
 public class DBtest {
-
     @Autowired
     private ProductService productService;
 
@@ -35,8 +29,6 @@ public class DBtest {
     @Test
     public void givenProductWhenSaveThenGetOk() {
         Product product = new Product();
-        product.setTitle("TestProduct");
-        product.setPrice(50);
         product.setId(10L);
         //        Mockito
         //                .doReturn(Optional.of(demoProduct))
@@ -49,5 +41,23 @@ public class DBtest {
         assertEquals("TestProduct", p.getTitle());
     }
 
+    /**
+     * 5.2. Тестирование процесса сохранения данных в базу данных:
+     *      создать объект, ввести данные, сохранить их в базу данных,
+     *      проверить, что сохраненные данные соответствуют ожидаемым.
+     * */
+    @Test
+    public void givenStudentWithTags_whenSave_thenGetByTagOk() {
+        Product product = new Product();
+        product.setId(10L);
+        product.setTitle("ProdustTest1");
+        product.setPrice(899);
+
+        productService.saveOrUpdate(product);
+        Product p = productService.findProductById(10L).get();
+
+        assertEquals("ProdustTest1", p.getTitle());
+        assertEquals(10L, p.getPrice());
+    }
 
 }
